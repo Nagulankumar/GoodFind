@@ -1,0 +1,93 @@
+{% extends 'app_base.html' %}
+{% block title %}Match details — GoodFind{% endblock %}
+{% block main %}
+<p class="muted"><a href="{{ url_for('matches') }}">Back to matches</a></p>
+<div class="tag-card">
+  <div class="score">{{ match.score }}%<small>confidence</small></div>
+  <div style="flex:1">
+    <h1 style="font-size:1.4rem;margin:0">{{ verdict }}</h1>
+    <p class="muted" style="margin:4px 0 0">{{ found.name }}, handed in by {{ finder.name }}
+       at {{ found.location }} on {{ found.date }}. Held at {{ org.collection_desk }}.</p>
+  </div>
+  {% if match.claim_status == 'none' %}
+  <form method="post" action="{{ url_for('contact_finder', match_id=match.id) }}">
+    <button class="btn" type="submit">Contact the finder</button>
+  </form>
+  {% endif %}
+</div>
+
+<div class="compare">
+  <figure>
+    <figcaption>Your reference photo</figcaption>
+    {% if lost.image_url %}<img src="{{ lost.image_url | img_src }}" alt="The item you lost">
+    {% else %}<div class="no-photo">No photo on your report</div>{% endif %}
+  </figure>
+  <figure>
+    <figcaption>The finder's photo</figcaption>
+    {% if found.image_url %}<img src="{{ found.image_url | img_src }}" alt="The item that was handed in">
+    {% else %}<div class="no-photo">The finder didn't add a photo</div>{% endif %}
+  </figure>
+</div>
+{% if match.notes.image_similarity %}
+<p class="muted">Photo analysis: the two images are {{ match.notes.image_similarity }}% alike
+   (shape, edges and colour compared).</p>
+{% endif %}
+
+<div class="grid k2" style="margin-top:18px">
+  <div class="card">
+    <h3>What you reported</h3>
+    <table>
+      <tr><th>Item</th><td>{{ lost.name }}</td></tr>
+      <tr><th>Category</th><td>{{ lost.category }}</td></tr>
+      <tr><th>Brand</th><td>{{ lost.brand or '—' }}</td></tr>
+      <tr><th>Colour</th><td>{{ lost.color or '—' }}</td></tr>
+      <tr><th>Place</th><td>{{ lost.location }}</td></tr>
+      <tr><th>Date</th><td>{{ lost.date }}</td></tr>
+    </table>
+  </div>
+  <div class="card">
+    <h3>What was handed in</h3>
+    <table>
+      <tr><th>Item</th><td>{{ found.name }}</td></tr>
+      <tr><th>Category</th><td>{{ found.category }}</td></tr>
+      <tr><th>Brand</th><td>{{ found.brand or '—' }}</td></tr>
+      <tr><th>Colour</th><td>{{ found.color or '—' }}</td></tr>
+      <tr><th>Place</th><td>{{ found.location }}</td></tr>
+      <tr><th>Date</th><td>{{ found.date }}</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="card" style="margin-top:18px">
+  <h3>How this score was built</h3>
+  <p class="muted">Nothing here is a black box — every point comes from one comparison.</p>
+  <table>
+    {% for k, v in match.factors.items() %}<tr><th>{{ k }}</th><td>+{{ v }} points</td></tr>{% endfor %}
+    <tr><th>Total</th><td><strong>{{ match.score }} / 100</strong></td></tr>
+  </table>
+</div>
+
+{% if match.claim_status == 'none' %}
+<div class="card" style="margin-top:18px;max-width:640px">
+  <h3>Prove it's yours</h3>
+  <p class="muted">Describe something only the owner would know — a lock screen photo,
+     a scratch, what was inside. The front desk checks this before releasing the item.</p>
+  <form method="post">
+    <div class="field">
+      <label for="unique_detail">Identifying detail</label>
+      <textarea id="unique_detail" name="unique_detail"></textarea>
+    </div>
+    <button class="btn" type="submit">Send claim</button>
+  </form>
+</div>
+{% elif match.claim_status == 'pending' %}
+<div class="card" style="margin-top:18px"><span class="badge warn">Claim under review</span>
+  <p class="muted" style="margin-top:8px">The front desk is checking your answer.</p></div>
+{% elif match.claim_status == 'approved' %}
+<div class="card" style="margin-top:18px"><span class="badge ok">Approved</span>
+  <p style="margin-top:8px">Collect it from {{ org.collection_desk }}. Bring your ID card.</p></div>
+{% else %}
+<div class="card" style="margin-top:18px"><span class="badge bad">Claim rejected</span>
+  <p class="muted" style="margin-top:8px">Your report is still open and we keep searching.</p></div>
+{% endif %}
+{% endblock %}

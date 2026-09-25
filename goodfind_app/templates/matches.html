@@ -1,0 +1,35 @@
+{% extends 'app_base.html' %}
+{% block title %}Matches — GoodFind{% endblock %}
+{% block main %}
+<h1>Possible matches</h1>
+<p class="sub">Scored against items handed in at {{ org.name }} only.</p>
+
+{% if rows %}
+<div class="stack" style="margin-top:16px">
+  {% for r in rows %}
+  <div class="tag-card">
+    <div class="score">{{ r.match.score }}%<small>confidence</small></div>
+    {% if r.found.image_url %}
+    <img class="thumb" src="{{ r.found.image_url | img_src }}" alt="{{ r.found.name }}">
+    {% endif %}
+    <div style="flex:1">
+      <h3 style="margin-bottom:2px">{{ r.found.name }}</h3>
+      <p class="muted" style="margin:0">{% if r.match.notes.image_similarity %}Photos {{ r.match.notes.image_similarity }}% alike · {% endif %}Found at {{ r.found.location }} on {{ r.found.date }}<br>
+        Your report: {{ r.lost.name }} ({{ r.lost.location }}, {{ r.lost.date }})</p>
+      <p style="margin:8px 0 0">
+        {% for k, v in r.match.factors.items() %}<span class="badge">{{ k }} +{{ v }}</span> {% endfor %}
+      </p>
+    </div>
+    <div>
+      {% if r.match.claim_status == 'pending' %}<span class="badge warn">Claim under review</span>
+      {% elif r.match.claim_status == 'approved' %}<span class="badge ok">Approved — collect it</span>
+      {% elif r.match.claim_status == 'rejected' %}<span class="badge bad">Claim rejected</span>
+      {% else %}<a class="btn" href="{{ url_for('match_details', match_id=r.match.id) }}">Review and claim</a>{% endif %}
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="card"><p class="muted">No matches yet. We check every new item handed in and alert you the moment one looks like yours.</p></div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% block title %}Log in — GoodFind{% endblock %}
+{% block body %}
+<div class="landing" style="max-width:420px">
+  <a class="brand" href="{{ url_for('landing') }}">GoodFind</a>
+  <h1 style="font-size:1.8rem;margin-top:24px">Log in</h1>
+  {% include 'partials/_flash.html' %}
+  {% if errors.form %}<div class="err-box">{{ errors.form }}</div>{% endif %}
+  <form method="post" class="card">
+    <div class="field">
+      <label for="email">Email</label>
+      <input id="email" name="email" type="email" value="{{ email }}" autocomplete="email">
+      {% if errors.email %}<div class="err">{{ errors.email }}</div>{% endif %}
+    </div>
+    <div class="field">
+      <label for="password">Password</label>
+      <input id="password" name="password" type="password" autocomplete="current-password">
+      {% if errors.password %}<div class="err">{{ errors.password }}</div>{% endif %}
+    </div>
+    <button class="btn" type="submit">Log in</button>
+  </form>
+  <p class="muted" style="margin-top:16px">
+    New here? <a href="{{ url_for('signup') }}">Join your organization</a> ·
+    <a href="{{ url_for('register_org') }}">Set up a new one</a>
+  </p>
+  <div class="card muted">
+    <strong>Demo accounts</strong><br>
+    demo@vsbec.ac.in / demo1234 (member)<br>
+    desk@vsbec.ac.in / desk1234 (front desk)<br>
+    admin@vsbec.ac.in / admin1234 (admin)<br>
+    ravi@northgate.example / ravi1234 (a different organization)
+  </div>
+</div>
+{% endblock %}

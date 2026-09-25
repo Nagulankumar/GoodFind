@@ -1,0 +1,22 @@
+{% extends 'app_base.html' %}
+{% block title %}Profile — GoodFind{% endblock %}
+{% block main %}
+<h1>Profile</h1>
+<div class="card" style="max-width:520px">
+  <form method="post">
+    <div class="field">
+      <label for="name">Display name</label>
+      <input id="name" name="name" value="{{ user.name }}">
+    </div>
+    <div class="field">
+      <label>Email</label>
+      <input value="{{ user.email }}" disabled>
+    </div>
+    <div class="field">
+      <label>Organization</label>
+      <input value="{{ org.name }} ({{ user.role }})" disabled>
+    </div>
+    <button class="btn" type="submit">Save changes</button>
+  </form>
+</div>
+{% endblock %}

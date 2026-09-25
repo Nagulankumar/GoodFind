@@ -1,0 +1,56 @@
+{% extends 'app_base.html' %}
+{% block title %}Front desk — GoodFind{% endblock %}
+{% block main %}
+<h1>Front desk</h1>
+<p class="sub">Claims to review and items currently held at {{ org.collection_desk }}.</p>
+
+<h2 style="margin-top:24px">Claims waiting for you</h2>
+{% if claims %}
+<div class="stack">
+  {% for c in claims %}
+  <div class="card">
+    <div class="spread">
+      <h3 style="margin:0">{{ c.found.name }}</h3>
+      <span class="badge warn">{{ c.match.score }}% match</span>
+    </div>
+    <p class="muted" style="margin:6px 0">Claimed by {{ c.claimant.name }} ({{ c.claimant.email }})
+       · found at {{ c.found.location }} on {{ c.found.date }}</p>
+    <div class="compare small">
+      <figure><figcaption>Owner's reference photo</figcaption>
+        {% if c.lost.image_url %}<img src="{{ c.lost.image_url | img_src }}" alt="">
+        {% else %}<div class="no-photo">None</div>{% endif %}</figure>
+      <figure><figcaption>Photo taken at handover</figcaption>
+        {% if c.found.image_url %}<img src="{{ c.found.image_url | img_src }}" alt="">
+        {% else %}<div class="no-photo">None</div>{% endif %}</figure>
+    </div>
+    <p><strong>Their identifying detail:</strong> {{ c.match.claim_answer }}</p>
+    <div class="row">
+      <form method="post" action="{{ url_for('decide_claim', match_id=c.match.id, decision='approve') }}">
+        <button class="btn small" type="submit">Approve claim</button></form>
+      <form method="post" action="{{ url_for('decide_claim', match_id=c.match.id, decision='reject') }}">
+        <button class="btn small danger" type="submit">Reject</button></form>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="card"><p class="muted">No claims waiting. New ones appear here as soon as someone claims an item.</p></div>
+{% endif %}
+
+<h2 style="margin-top:28px">Items in holding</h2>
+<div class="card scroll-x">
+  <table>
+    <tr><th>Item</th><th>Category</th><th>Found at</th><th>Date</th><th>Status</th><th></th></tr>
+    {% for i in holding %}
+    <tr>
+      <td>{{ i.name }}</td><td>{{ i.category }}</td><td>{{ i.location }}</td><td>{{ i.date }}</td>
+      <td><span class="badge {{ 'ok' if i.status.startswith('Approved') }}">{{ i.status }}</span></td>
+      <td><form method="post" action="{{ url_for('mark_returned', item_id=i.id) }}">
+        <button class="btn small ghost" type="submit">Mark returned</button></form></td>
+    </tr>
+    {% else %}
+    <tr><td colspan="6" class="muted">Nothing is being held right now.</td></tr>
+    {% endfor %}
+  </table>
+</div>
+{% endblock %}

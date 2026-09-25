@@ -1,0 +1,29 @@
+{% extends 'app_base.html' %}
+{% block title %}Notifications — GoodFind{% endblock %}
+{% block main %}
+<h1>Notifications</h1>
+{% if notifications %}
+<div class="stack">
+  {% for n in notifications %}
+  <div class="card" data-note>
+    <div class="spread">
+      <div>
+        <h3 style="margin:0">{{ n.title }}</h3>
+        <p class="muted" style="margin:4px 0 0">{{ n.body }}</p>
+      </div>
+      <div class="row">
+        <span class="muted">{{ n.created_at.strftime('%d %b, %I:%M %p') }}</span>
+        {% if not n.read %}
+        <form method="post" data-dismiss action="{{ url_for('dismiss_notification', notif_id=n.id) }}">
+          <button class="btn small ghost" type="submit">Mark read</button>
+        </form>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="card"><p class="muted">You're all caught up.</p></div>
+{% endif %}
+{% endblock %}

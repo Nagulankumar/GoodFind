@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block title %}Join — GoodFind{% endblock %}
+{% block body %}
+<div class="landing" style="max-width:460px">
+  <a class="brand" href="{{ url_for('landing') }}">GoodFind</a>
+  <h1 style="font-size:1.8rem;margin-top:24px">Join your organization</h1>
+  <p class="muted">Use your work or college email and we'll place you automatically.
+     Personal email? Enter the join code your admin shared.</p>
+  {% include 'partials/_flash.html' %}
+  <form method="post" class="card">
+    <div class="field">
+      <label for="name">Full name</label>
+      <input id="name" name="name" value="{{ name }}">
+      {% if errors.name %}<div class="err">{{ errors.name }}</div>{% endif %}
+    </div>
+    <div class="field">
+      <label for="email">Email</label>
+      <input id="email" name="email" type="email" value="{{ email }}">
+      {% if errors.email %}<div class="err">{{ errors.email }}</div>{% endif %}
+    </div>
+    <div class="field">
+      <label for="join_code">Join code (only if your email isn't a work address)</label>
+      <input id="join_code" name="join_code" value="{{ join_code }}" placeholder="VSB2026">
+      {% if errors.join_code %}<div class="err">{{ errors.join_code }}</div>{% endif %}
+    </div>
+    <div class="two">
+      <div class="field">
+        <label for="password">Password</label>
+        <input id="password" name="password" type="password">
+        {% if errors.password %}<div class="err">{{ errors.password }}</div>{% endif %}
+      </div>
+      <div class="field">
+        <label for="confirm_password">Confirm password</label>
+        <input id="confirm_password" name="confirm_password" type="password">
+        {% if errors.confirm_password %}<div class="err">{{ errors.confirm_password }}</div>{% endif %}
+      </div>
+    </div>
+    <button class="btn" type="submit">Create account</button>
+  </form>
+  <p class="muted" style="margin-top:14px"><a href="{{ url_for('login') }}">I already have an account</a></p>
+</div>
+{% endblock %}

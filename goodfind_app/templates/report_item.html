@@ -1,0 +1,76 @@
+{% extends 'app_base.html' %}
+{% block title %}{{ 'Report a lost item' if mode == 'lost' else 'Hand in a found item' }} — GoodFind{% endblock %}
+{% block main %}
+<div class="tabs">
+  <a href="{{ url_for('report_lost') }}" class="{{ 'on' if mode == 'lost' }}">I lost something</a>
+  <a href="{{ url_for('report_found') }}" class="{{ 'on' if mode == 'found' }}">I found something</a>
+</div>
+
+<h1>{{ 'Report a lost item' if mode == 'lost' else 'Hand in a found item' }}</h1>
+<p class="sub">{% if mode == 'lost' %}The more detail you give, the better the match.
+  {% else %}Please drop the item at {{ org.collection_desk }} after submitting this form.{% endif %}</p>
+
+<form method="post" enctype="multipart/form-data" class="card" style="max-width:640px;margin-top:16px">
+  <div class="field">
+    <label for="name">What is it?</label>
+    <input id="name" name="name" value="{{ form.get('name','') }}" placeholder="Black Samsung phone">
+    {% if errors.name %}<div class="err">{{ errors.name }}</div>{% endif %}
+  </div>
+  <div class="two">
+    <div class="field">
+      <label for="category">Category</label>
+      <select id="category" name="category">
+        <option value="">Choose one</option>
+        {% for c in categories %}<option {{ 'selected' if form.get('category')==c }}>{{ c }}</option>{% endfor %}
+      </select>
+      {% if errors.category %}<div class="err">{{ errors.category }}</div>{% endif %}
+    </div>
+    <div class="field">
+      <label for="color">Colour</label>
+      <input id="color" name="color" value="{{ form.get('color','') }}" placeholder="Black">
+    </div>
+  </div>
+  <div class="two">
+    <div class="field">
+      <label for="brand">Brand (optional)</label>
+      <input id="brand" name="brand" value="{{ form.get('brand','') }}">
+    </div>
+    <div class="field">
+      <label for="model">Model (optional)</label>
+      <input id="model" name="model" value="{{ form.get('model','') }}">
+    </div>
+  </div>
+  <div class="field">
+    <label for="location">{{ 'Where did you lose it?' if mode == 'lost' else 'Where did you find it?' }}</label>
+    <input id="location" name="location" value="{{ form.get('location','') }}" placeholder="College Library, 2nd floor">
+    {% if errors.location %}<div class="err">{{ errors.location }}</div>{% endif %}
+  </div>
+  <div class="two">
+    <div class="field">
+      <label for="date">Date</label>
+      <input id="date" name="date" type="date" value="{{ form.get('date','') }}">
+      {% if errors.date %}<div class="err">{{ errors.date }}</div>{% endif %}
+    </div>
+    <div class="field">
+      <label for="time">Approximate time (optional)</label>
+      <input id="time" name="time" type="time" value="{{ form.get('time','') }}">
+    </div>
+  </div>
+  <div class="field">
+    <label for="description">Description</label>
+    <textarea id="description" name="description" placeholder="Marks, stickers, what was inside...">{{ form.get('description','') }}</textarea>
+    {% if errors.description %}<div class="err">{{ errors.description }}</div>{% endif %}
+  </div>
+  <div class="field">
+    <label for="photo">{{ 'Reference photo of what you lost' if mode == 'lost' else 'Photo of the item you found' }}</label>
+    <p class="muted" style="margin:0 0 8px">
+      {% if mode == 'lost' %}An old photo of the item, or one taken at the shop — anything that shows what it looks like.
+      {% else %}Take one clear photo against a plain surface. It is compared with owners' reference photos.{% endif %}
+    </p>
+    <input id="photo" name="photo" type="file" accept="image/*" data-preview="#photo-preview">
+    <img id="photo-preview" class="preview" alt="" hidden>
+  </div>
+
+  <button class="btn" type="submit">{{ 'Submit report' if mode == 'lost' else 'Log the item' }}</button>
+</form>
+{% endblock %}

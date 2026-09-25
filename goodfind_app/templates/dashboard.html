@@ -1,0 +1,49 @@
+{% extends 'app_base.html' %}
+{% block title %}Overview — GoodFind{% endblock %}
+{% block main %}
+<div class="page-head">
+  <div>
+    <h1>Hello, {{ session.user_name.split()[0] }}</h1>
+    <p class="sub">Collection desk: {{ org.collection_desk }}</p>
+  </div>
+  <span class="row">
+    <a class="btn" href="{{ url_for('report_lost') }}">I lost something</a>
+    <a class="btn ghost" href="{{ url_for('report_found') }}">I found something</a>
+  </span>
+</div>
+
+<div class="grid k4">
+  <div class="stat"><div class="n">{{ lost_count }}</div><div class="l">Open lost reports</div></div>
+  <div class="stat"><div class="n">{{ found_count }}</div><div class="l">Items you handed in</div></div>
+  <div class="stat"><div class="n">{{ match_count }}</div><div class="l">Possible matches</div></div>
+  <div class="stat"><div class="n">{{ returned_count }}</div><div class="l">Returned to you</div></div>
+</div>
+
+{% if top_match %}
+<h2 style="margin-top:28px">Your strongest match</h2>
+<div class="tag-card">
+  <div class="score">{{ top_match.match.score }}%<small>confidence</small></div>
+  <div style="flex:1">
+    <h3 style="margin-bottom:2px">{{ top_match.found.name }}</h3>
+    <p class="muted" style="margin:0">Handed in at {{ top_match.found.location }} on
+       {{ top_match.found.date }} — against your report of {{ top_match.lost.name }}.</p>
+  </div>
+  <a class="btn" href="{{ url_for('match_details', match_id=top_match.match.id) }}">Review and claim</a>
+</div>
+{% endif %}
+
+<h2 style="margin-top:28px">Recent activity</h2>
+{% if activity %}
+<div class="card stack">
+  {% for a in activity %}
+  <div class="spread">
+    <span>{{ a.text }}</span>
+    <span class="muted">{{ a.meta }} · {{ a.time.strftime('%d %b') }}</span>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="card"><p class="muted">Nothing here yet. Report a lost item and we'll start watching for it.</p>
+<a class="btn small" href="{{ url_for('report_lost') }}">Report a lost item</a></div>
+{% endif %}
+{% endblock %}

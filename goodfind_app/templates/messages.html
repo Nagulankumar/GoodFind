@@ -1,0 +1,38 @@
+{% extends 'app_base.html' %}
+{% block title %}Messages — GoodFind{% endblock %}
+{% block main %}
+<h1>Messages</h1>
+<p class="sub">Talk to the finder or the front desk without sharing your phone number.</p>
+
+{% if conversations %}
+<div class="thread">
+  <div class="thread-list">
+    {% for c in conversations %}
+    <a href="{{ url_for('messages', conv=c.id) }}" class="{{ 'on' if active_conv and c.id == active_conv.id }}">
+      <strong>{{ other_name(c, session.user_id) }}</strong><br>
+      <span class="muted">{{ c.item_summary }}</span>
+    </a>
+    {% endfor %}
+  </div>
+  <div>
+    {% if active_conv %}
+    <div class="bubbles">
+      {% for m in active_conv.messages %}
+      <div class="bubble {{ 'me' if m.sender == session.user_id }}">
+        {{ m.text }}<div class="t">{{ m.time }}</div>
+      </div>
+      {% endfor %}
+    </div>
+    <form class="composer" method="post" action="{{ url_for('send_message', conv_id=active_conv.id) }}">
+      <input name="text" placeholder="Write a message" aria-label="Message">
+      <button class="btn" type="submit">Send</button>
+    </form>
+    {% else %}
+    <div class="bubbles"><p class="muted">Pick a conversation on the left.</p></div>
+    {% endif %}
+  </div>
+</div>
+{% else %}
+<div class="card"><p class="muted">No conversations yet. One starts when a finder or the desk contacts you about an item.</p></div>
+{% endif %}
+{% endblock %}

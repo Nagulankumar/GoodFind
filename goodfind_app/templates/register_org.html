@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% block title %}Set up an organization — GoodFind{% endblock %}
+{% block body %}
+<div class="landing" style="max-width:560px">
+  <a class="brand" href="{{ url_for('landing') }}">GoodFind</a>
+  <h1 style="font-size:1.8rem;margin-top:24px">Set up your organization</h1>
+  <p class="muted">This creates a private space for your college, office or venue,
+     and makes you its admin.</p>
+  {% include 'partials/_flash.html' %}
+  <form method="post" class="card">
+    <div class="field">
+      <label for="name">Organization name</label>
+      <input id="name" name="name" value="{{ form.get('name','') }}">
+      {% if errors.name %}<div class="err">{{ errors.name }}</div>{% endif %}
+    </div>
+    <div class="two">
+      <div class="field">
+        <label for="type">Type of place</label>
+        <select id="type" name="type">
+          {% for t in org_types %}<option {{ 'selected' if form.get('type')==t }}>{{ t }}</option>{% endfor %}
+        </select>
+      </div>
+      <div class="field">
+        <label for="email_domain">Email domain</label>
+        <input id="email_domain" name="email_domain" placeholder="vsbec.ac.in" value="{{ form.get('email_domain','') }}">
+        {% if errors.email_domain %}<div class="err">{{ errors.email_domain }}</div>{% endif %}
+      </div>
+    </div>
+    <div class="two">
+      <div class="field">
+        <label for="join_code">Join code</label>
+        <input id="join_code" name="join_code" placeholder="VSB2026" value="{{ form.get('join_code','') }}">
+        {% if errors.join_code %}<div class="err">{{ errors.join_code }}</div>{% endif %}
+      </div>
+      <div class="field">
+        <label for="collection_desk">Collection desk</label>
+        <input id="collection_desk" name="collection_desk" placeholder="Admin Block, Room 12" value="{{ form.get('collection_desk','') }}">
+        {% if errors.collection_desk %}<div class="err">{{ errors.collection_desk }}</div>{% endif %}
+      </div>
+    </div>
+    <h3 style="margin-top:18px">Your admin account</h3>
+    <div class="field">
+      <label for="admin_name">Your name</label>
+      <input id="admin_name" name="admin_name" value="{{ form.get('admin_name','') }}">
+      {% if errors.admin_name %}<div class="err">{{ errors.admin_name }}</div>{% endif %}
+    </div>
+    <div class="two">
+      <div class="field">
+        <label for="admin_email">Your email</label>
+        <input id="admin_email" name="admin_email" type="email" value="{{ form.get('admin_email','') }}">
+        {% if errors.admin_email %}<div class="err">{{ errors.admin_email }}</div>{% endif %}
+      </div>
+      <div class="field">
+        <label for="admin_password">Password</label>
+        <input id="admin_password" name="admin_password" type="password">
+        {% if errors.admin_password %}<div class="err">{{ errors.admin_password }}</div>{% endif %}
+      </div>
+    </div>
+    <button class="btn" type="submit">Create organization</button>
+  </form>
+</div>
+{% endblock %}

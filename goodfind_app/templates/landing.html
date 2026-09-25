@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block title %}GoodFind — lost and found for one place{% endblock %}
+{% block body %}
+<div class="landing">
+  {% include 'partials/_flash.html' %}
+  <header class="spread" style="margin-bottom:40px">
+    <span class="brand">GoodFind</span>
+    <span class="row">
+      <a class="btn ghost small" href="{{ url_for('login') }}">Log in</a>
+      <a class="btn small" href="{{ url_for('signup') }}">Join your organization</a>
+    </span>
+  </header>
+
+  <section class="hero">
+    <h1>Every lost thing on your campus, in one ledger.</h1>
+    <p>GoodFind gives a college, an office or a hospital its own private lost
+      and found. People report what they lost, anyone can hand in what they
+      find, and the system tells the owner within seconds of a likely match.</p>
+    <p class="row">
+      <a class="btn" href="{{ url_for('register_org') }}">Set up your organization</a>
+      <a class="btn ghost" href="{{ url_for('login') }}">Try the demo account</a>
+    </p>
+  </section>
+
+  <div class="ledger">
+    <div class="line"><span>Black Samsung phone · Library, 2nd floor</span><span class="badge warn">92% match</span></div>
+    <div class="line"><span>Brown leather wallet · Cafeteria</span><span class="badge">Held at desk</span></div>
+    <div class="line"><span>Airpods case · Sports ground</span><span class="badge ok">Returned</span></div>
+  </div>
+
+  <section class="grid k3">
+    <div class="card"><h3>Separate by organization</h3>
+      <p class="muted">Items, people and matches never cross between organizations. Joining is by work email domain or a join code.</p></div>
+    <div class="card"><h3>Matching you can explain</h3>
+      <p class="muted">Each score breaks down into category, brand, colour, date and location, so the front desk can see why two items were paired.</p></div>
+    <div class="card"><h3>Handover with proof</h3>
+      <p class="muted">The owner answers one question only they could answer. Staff approve it, then the item is released at the collection desk.</p></div>
+  </section>
+
+  <section style="margin-top:34px">
+    <h2>Organizations already using it</h2>
+    <div class="grid k2">
+      {% for o in orgs %}
+      <div class="card"><h3>{{ o.name }}</h3>
+        <p class="muted">{{ o.type }} · Collection desk: {{ o.collection_desk }}<br>
+        Join code: <strong>{{ o.join_code }}</strong></p></div>
+      {% endfor %}
+    </div>
+  </section>
+</div>
+{% endblock %}

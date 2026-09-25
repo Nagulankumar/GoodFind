@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block body %}
+<div class="shell">
+  <aside class="sidebar">
+    <a class="brand" href="{{ url_for('dashboard') }}">GoodFind</a>
+    <span class="org-chip">{{ org.name }}</span>
+
+    <nav class="nav">
+      <a href="{{ url_for('dashboard') }}" class="{{ 'on' if active_nav == 'dashboard' }}">Overview</a>
+      <a href="{{ url_for('report_lost') }}" class="{{ 'on' if active_nav == 'report' }}">Report an item</a>
+      <a href="{{ url_for('items') }}" class="{{ 'on' if active_nav == 'items' }}">My reports</a>
+      <a href="{{ url_for('matches') }}" class="{{ 'on' if active_nav == 'matches' }}">Matches</a>
+      <a href="{{ url_for('messages') }}" class="{{ 'on' if active_nav == 'messages' }}">Messages</a>
+      <a href="{{ url_for('notifications') }}" class="{{ 'on' if active_nav == 'notifications' }}">
+        Notifications{% if unread_count %}<span class="pill">{{ unread_count }}</span>{% endif %}</a>
+
+      {% if role in ['staff', 'admin'] %}
+      <div class="nav-group">Front desk</div>
+      <a href="{{ url_for('staff_desk') }}" class="{{ 'on' if active_nav == 'desk' }}">Claims &amp; holding</a>
+      {% endif %}
+      {% if role == 'admin' %}
+      <a href="{{ url_for('admin_dashboard') }}" class="{{ 'on' if active_nav == 'admin' }}">Organization</a>
+      {% endif %}
+    </nav>
+
+    <div class="sidebar-foot">
+      <a href="{{ url_for('profile') }}">{{ session.user_name }}</a>
+      <div class="muted">{{ role }}</div>
+      <a class="muted" href="{{ url_for('logout') }}">Log out</a>
+    </div>
+  </aside>
+
+  <main class="main">
+    {% include 'partials/_flash.html' %}
+    {% block main %}{% endblock %}
+  </main>
+</div>
+{% endblock %}

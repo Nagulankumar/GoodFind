@@ -1,0 +1,36 @@
+{% extends 'app_base.html' %}
+{% block title %}My reports — GoodFind{% endblock %}
+{% block main %}
+<h1>My reports</h1>
+<div class="tabs">
+  <a href="{{ url_for('items', tab='lost') }}" class="{{ 'on' if tab == 'lost' }}">Lost ({{ lost|length }})</a>
+  <a href="{{ url_for('items', tab='found') }}" class="{{ 'on' if tab == 'found' }}">Handed in ({{ found|length }})</a>
+  <a href="{{ url_for('items', tab='returned') }}" class="{{ 'on' if tab == 'returned' }}">Returned ({{ returned|length }})</a>
+</div>
+
+{% set rows = lost if tab == 'lost' else (found if tab == 'found' else returned) %}
+{% if rows %}
+<div class="grid k2">
+  {% for i in rows %}
+  <div class="card">
+    <div class="spread">
+      <h3 style="margin:0">{{ i.name }}</h3>
+      <span class="badge {{ 'ok' if i.status == 'Returned' else ('warn' if i.status != 'Searching' else '') }}">{{ i.status }}</span>
+    </div>
+    <p class="muted" style="margin:6px 0">{{ i.category }} · {{ i.location }} · {{ i.date }}</p>
+    {% if i.image_url %}<img class="thumb wide" src="{{ i.image_url | img_src }}" alt="{{ i.name }}">{% endif %}
+    <p style="margin:0">{{ i.description }}</p>
+    {% if tab == 'lost' and match_count(i.id) %}
+    <p style="margin-top:10px"><a class="btn small" href="{{ url_for('matches') }}">
+      {{ match_count(i.id) }} possible match{{ 'es' if match_count(i.id) > 1 }}</a></p>
+    {% endif %}
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="card">
+  <p class="muted">Nothing in this list yet.</p>
+  <a class="btn small" href="{{ url_for('report_lost') }}">Report a lost item</a>
+</div>
+{% endif %}
+{% endblock %}

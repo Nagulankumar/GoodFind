@@ -1,0 +1,60 @@
+{% extends 'app_base.html' %}
+{% block title %}Organization — GoodFind{% endblock %}
+{% block main %}
+<h1>{{ org.name }}</h1>
+<p class="sub">{{ org.type }} · join code <strong>{{ org.join_code }}</strong> ·
+   anyone with an @{{ org.email_domain }} email joins automatically.</p>
+
+<div class="grid k4" style="margin-top:16px">
+  <div class="stat"><div class="n">{{ stats.total_users }}</div><div class="l">Members</div></div>
+  <div class="stat"><div class="n">{{ stats.lost_reports }}</div><div class="l">Open lost reports</div></div>
+  <div class="stat"><div class="n">{{ stats.found_reports }}</div><div class="l">Items handed in</div></div>
+  <div class="stat"><div class="n">{{ stats.return_rate }}%</div><div class="l">Return rate</div></div>
+</div>
+<div class="grid k3" style="margin-top:14px">
+  <div class="stat"><div class="n">{{ stats.possible_matches }}</div><div class="l">Matches generated</div></div>
+  <div class="stat"><div class="n">{{ stats.pending_claims }}</div><div class="l">Claims awaiting review</div></div>
+  <div class="stat"><div class="n">{{ stats.successful_returns }}</div><div class="l">Items returned</div></div>
+</div>
+
+<div class="card" style="margin-top:18px;max-width:520px">
+  <h3>Collection desk</h3>
+  <p class="muted">Members are told to bring and collect items here.</p>
+  <form method="post" class="row">
+    <input name="collection_desk" value="{{ org.collection_desk }}" style="flex:1">
+    <button class="btn" type="submit">Save</button>
+  </form>
+</div>
+
+<h2 style="margin-top:28px">Open lost reports</h2>
+<div class="card scroll-x">
+  <table>
+    <tr><th>Item</th><th>Category</th><th>Place</th><th>Date</th><th>Status</th></tr>
+    {% for i in lost_items %}
+    <tr><td>{{ i.name }}</td><td>{{ i.category }}</td><td>{{ i.location }}</td>
+        <td>{{ i.date }}</td><td><span class="badge">{{ i.status }}</span></td></tr>
+    {% else %}<tr><td colspan="5" class="muted">No open reports.</td></tr>{% endfor %}
+  </table>
+</div>
+
+<h2 style="margin-top:24px">Items handed in</h2>
+<div class="card scroll-x">
+  <table>
+    <tr><th>Item</th><th>Category</th><th>Place</th><th>Date</th><th>Status</th></tr>
+    {% for i in found_items %}
+    <tr><td>{{ i.name }}</td><td>{{ i.category }}</td><td>{{ i.location }}</td>
+        <td>{{ i.date }}</td><td><span class="badge">{{ i.status }}</span></td></tr>
+    {% else %}<tr><td colspan="5" class="muted">Nothing handed in yet.</td></tr>{% endfor %}
+  </table>
+</div>
+
+<h2 style="margin-top:24px">Members</h2>
+<div class="card scroll-x">
+  <table>
+    <tr><th>Name</th><th>Email</th><th>Role</th></tr>
+    {% for m in members %}
+    <tr><td>{{ m.name }}</td><td>{{ m.email }}</td><td><span class="badge">{{ m.role }}</span></td></tr>
+    {% endfor %}
+  </table>
+</div>
+{% endblock %}
